@@ -10,6 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "data-store": "^4.0.3"
+    "axios": "^0.21.1",
+    "data-store": "^4.0.3",
+    "dotenv": "^8.2.0",
+    "tiktok-scraper": "^1.4.12"
   }
 }
