@@ -1,5 +1,7 @@
 const axios = require('axios');
 const tts = require('tiktok-scraper');
+const fs = require('fs');
+
 require('dotenv').config();
 /*
 curl --header 'Access-Token: <your_access_token_here>' \
@@ -25,35 +27,83 @@ async function getPushes(modifiedAfter) {
             console.log(error);
         });
 }
-function justTheURLs(pushes) {
-    const videos = [];
+async function justTheLinks(pushes) {
+    const shortVideoURLs = [];
     pushes.forEach((push) => {
         if ('url' in push && push.url.indexOf('tiktok') !== -1) {
-            videos.push(push.url);
+            shortVideoURLs.push(push.url);
         }
     });
-    return videos;
+    const results = await Promise.all(shortVideoURLs.map(getFromTikTok));
+    const webVideoURLs = [];
+    results.forEach((result) => {
+        if (!result.success) {
+            return;
+        }
+        const responseUrl = new URL(result.response.request.res.responseUrl);
+        webVideoURLs.push(responseUrl.toString().replace(responseUrl.search, ''));
+    });
+    return webVideoURLs;
 }
-function storeURLs(URLs) {
-    const store = require('data-store')({path: process.cwd() + '/data2.json'});
-    URLs.forEach((URL) => {
-        store.union('videos', URL);
+
+function getFromTikTok(URL) {
+    return axios
+        .get(URL, {
+            headers: {
+                'User-Agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.99 Safari/537.36',
+            },
+        })
+        .then(function (response) {
+            return {
+                success: true,
+                response: response,
+            };
+        })
+        .catch(function (error) {
+            return {success: false};
+        });
+}
+function storeLinks(store, links) {
+    links.forEach((link) => {
+        store.union('videos', link);
     });
     return store;
 }
 function downloadVids(store) {}
+function createList(links) {
+    const joined = links.join('\r\n');
+    fs.writeFile('list.txt', joined, function (err) {
+        if (err) return console.log(err);
+        console.log('List written');
+        console.log(joined);
+    });
+}
 async function init() {
+    const store = require('data-store')({path: process.cwd() + '/data.json'});
     const response = await getPushes(0);
     const pushes = response.data.pushes;
     const lastModified = pushes.slice(-1)[0].modified;
-    const videoURLs = justTheURLs(pushes);
-    const store = storeURLs(videoURLs);
-    const downloaded = downloadVids(store);
+    const videoLinks = await justTheLinks(pushes);
 
-    console.log(lastModified);
-    console.log(videoURLs);
+    storeLinks(store, videoLinks);
 
-    //const downloaded = downloadVids(videoURLs);
+    createList(videoLinks);
+    const download = await tts.fromfile('list.txt', {
+        download: true,
+        hdVideo: true,
+        filepath: process.cwd() + '/downloads/',
+    });
+    console.log(download);
+    store.set('lastModified', lastModified);
+
+    //const finalVideoLinks = finalVideoLinks(store);
+    //const downloaded = downloadVids(store);
+
+    //console.log(lastModified);
+    //console.log(videoLinks);
+
+    //const downloaded = downloadVids(videoLinks);
 }
 init();
 // create a config store ("foo.json") in the current working directory
