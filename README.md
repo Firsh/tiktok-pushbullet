@@ -16,7 +16,7 @@ If you used the tool before, it only looks into pushes that happened since the l
 
 ## Setup/Install
 
-1. Clone the repo `git clone https://github.com/TheFirsh/tiktok-pushbullet.git`
+1. Clone the repo `git clone https://github.com/Firsh/tiktok-pushbullet.git`
 2. Run `npm install` from inside the freshly created folder.
 3. Get a Pushbullet [API Access Token](https://www.pushbullet.com/#settings/account).
 4. Put it in a .env file containing `PUSHBULLET_ACCESS_TOKEN=12345`
