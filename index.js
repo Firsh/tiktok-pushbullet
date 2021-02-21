@@ -1,15 +1,7 @@
 const axios = require('axios');
 const tts = require('tiktok-scraper');
 const fs = require('fs');
-
 require('dotenv').config();
-/*
-curl --header 'Access-Token: <your_access_token_here>' \
-     --data-urlencode active="true" \
-     --data-urlencode modified_after="1.4e+09" \
-     --get \
-     https://api.pushbullet.com/v2/pushes
-*/
 
 async function getPushes(modifiedAfter) {
     return await axios
@@ -70,7 +62,13 @@ function storeLinks(store, links) {
     });
     return store;
 }
-function downloadVids(store) {}
+async function downloadVids() {
+    return await tts.fromfile('list.txt', {
+        download: true,
+        hdVideo: true,
+        filepath: process.cwd() + '/downloads/',
+    });
+}
 function createList(links) {
     const joined = links.join('\r\n');
     fs.writeFile('list.txt', joined, function (err) {
@@ -79,50 +77,19 @@ function createList(links) {
         console.log(joined);
     });
 }
+function purgeDownloadedFromStore(downloaded, store) {}
 async function init() {
     const store = require('data-store')({path: process.cwd() + '/data.json'});
-    const response = await getPushes(0);
+    let lastModified = store.get('lastModified') | 0;
+    const response = await getPushes(lastModified);
     const pushes = response.data.pushes;
-    const lastModified = pushes.slice(-1)[0].modified;
+    lastModified = pushes.slice(-1)[0].modified;
     const videoLinks = await justTheLinks(pushes);
-
     storeLinks(store, videoLinks);
-
-    createList(videoLinks);
-    const download = await tts.fromfile('list.txt', {
-        download: true,
-        hdVideo: true,
-        filepath: process.cwd() + '/downloads/',
-    });
-    console.log(download);
     store.set('lastModified', lastModified);
-
-    //const finalVideoLinks = finalVideoLinks(store);
-    //const downloaded = downloadVids(store);
-
-    //console.log(lastModified);
-    //console.log(videoLinks);
-
-    //const downloaded = downloadVids(videoLinks);
+    createList(videoLinks);
+    const downloaded = downloadVids();
+    purgeDownloadedFromStore(downloaded, store);
+    console.log(store.data);
 }
 init();
-// create a config store ("foo.json") in the current working directory
-
-//store.set('lastmod', 35165489491);
-//let vids = store.get('videos');
-//vids.pop();
-//store.set('videos', vids);
-//console.log(store.data); //=> { one: 'two' }
-/*
-store.set('x.y.z', 'boom!');
-store.set({ c: 'd' });
- 
-console.log(store.get('e.f'));
-//=> 'g'
- 
-console.log(store.get());
-//=> { name: 'app', data: { a: 'b', c: 'd', e: { f: 'g' } } }
- 
-console.log(store.data);
-*/
-//=> { a: 'b', c: 'd', e: { f: 'g' } }
