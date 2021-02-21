@@ -2,7 +2,7 @@
 
 Download TikTok videos you push to yourself via Pushbullet.
 
-Please bear with me, as this is my first little practice project involving git, nodejs, npm, Axios, async/await, let/const, and stuff like that.
+Please bear with me, as this is my first little practice project involving git, nodejs, npm, Axios, async/await, let/const, and stuff like that. Any contributions or suggestions are welcome. I primarily wrote this for my own etertainment, but decided to share, parhaps somebody feels that it's useful.
 
 ## What it does
 
@@ -17,8 +17,9 @@ If you used the tool before then it only looks into pushes that happened since t
 ## Setup
 
 1. Clone the repo.
-2. Get a Pushbullet API access token.
-3. Put it in a .env file containing `PUSHBULLET_ACCESS_TOKEN=12345`
+2. Run `npm install`
+3. Get a Pushbullet API access token.
+4. Put it in a .env file containing `PUSHBULLET_ACCESS_TOKEN=12345`
 
 ## How to use
 

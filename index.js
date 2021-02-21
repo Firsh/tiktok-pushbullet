@@ -134,6 +134,12 @@ function purgeDownloadedFromStore(downloaded, store) {
  * Main function to control the script.
  */
 async function init() {
+    if (!process.env.PUSHBULLET_ACCESS_TOKEN) {
+        console.log(
+            'You forgot to provide the Pushbullet access token in the .env file! PUSHBULLET_ACCESS_TOKEN=12345'
+        );
+        return;
+    }
     const store = require('data-store')({path: process.cwd() + '/data.json'});
     let lastModified = store.get('lastModified') | 0;
     //  Start by getting the pushes
