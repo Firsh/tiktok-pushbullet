@@ -24,7 +24,7 @@ async function getPushes(modifiedAfter) {
 }
 /**
  * Get the "real" TikTok URL that expands upon the short URL, by following the redirect.
- * @param {*} URL A short ("share-style") TikTok URL, such as https://vm.tiktok.com/whatever/
+ * @param {string} URL A short ("share-style") TikTok URL, such as https://vm.tiktok.com/whatever/
  * @returns {Object} axios response
  */
 async function getFromTikTok(URL) {
