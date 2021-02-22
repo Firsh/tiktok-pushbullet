@@ -29,13 +29,13 @@ If you used the tool before, it only looks into pushes that happened since the l
 
 You can move the finished downloads out to your regular storage place with sync tools. Videos won't be re-downloaded unless you push the same thing again.
 
-## Automating under Ubuntu with nvm
+## Automating every 6 hours under Ubuntu with nvm
 
 1. Put this into `crontab -e` and change `firsh` to your user:
 
 ```
 SHELL=/bin/bash
-* * * * * (source /home/firsh/.bashrc; cd /home/firsh/tiktok-pushbullet && node index.js)
+* */6 * * * source ~/.bashrc; cd ~/tiktok-pushbullet && node index.js
 ```
 
 2. In the `.bashrc` file **move** the following lines (put there by nvm) above the `# If not running interactively, don't do anything` line:
