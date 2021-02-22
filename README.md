@@ -28,3 +28,20 @@ If you used the tool before, it only looks into pushes that happened since the l
 3. Find your videos in the downloads folder.
 
 You can move the finished downloads out to your regular storage place with sync tools. Videos won't be re-downloaded unless you push the same thing again.
+
+## Automating under Ubuntu with nvm
+
+1. Put this into `crontab -e` and change firsh to your user:
+
+```
+SHELL=/bin/bash
+* * * * * (source /home/firsh/.bashrc; cd /home/firsh/tiktok-pushbullet && node index.js)
+```
+
+2. In the `.bashrc` file **move** the following lines (put there by nvm) above the `# If not running interactively, don't do anything` line.:
+
+```export NVM_DIR="/home/firsh/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+```
+
+It would have been much easier if `node` were installed globally, but I found it easier to use nvm instead of installation via package managers (that didn't work). The downside is that the bin is at an obscure location like `/home/firsh/.nvm/versions/node/v15.9.0/bin/node` which I guess is subject to change with new versions. So, I expect cron to "know" what and where `node` is, and this is the way. If you have any suggestions, let me know.
