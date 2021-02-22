@@ -145,7 +145,7 @@ async function init() {
     //  Start by getting the pushes
     const response = await getPushes(lastModified);
     const pushes = response.data.pushes;
-    lastModified = pushes.length !== 0 ? pushes[0].modified : lastModified;
+    lastModified = pushes.length !== 0 ? Math.ceil(pushes[0].modified) : lastModified;
     store.set('lastModified', lastModified);
     // Find the new videos (it DOES need the await)
     const newLinks = await newVideoLinks(pushes);
