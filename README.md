@@ -45,4 +45,4 @@ export NVM_DIR="/home/firsh/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 ```
 
-It would have been much easier if `node` were installed globally, but I found it easier to use nvm instead of installation via package managers (that didn't work). The downside is that the bin is at an obscure location like `/home/firsh/.nvm/versions/node/v15.9.0/bin/node`, which I guess is subject to change with new versions. So, I expect cron to "know" what and where `node` is, and this is the way. If you have any suggestions, let me know.
+It would have been much easier if `node` were installed globally, but I found it better to use nvm instead of installation via package managers (that didn't work). The downside is that the bin is at an obscure location like `/home/firsh/.nvm/versions/node/v15.9.0/bin/node`, which I guess is subject to change with new versions. So, I expect cron to "know" what and where `node` is, and this is the way. If you have any suggestions, let me know.
